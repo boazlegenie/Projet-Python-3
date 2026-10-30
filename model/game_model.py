@@ -12,6 +12,18 @@ class GameModel:
         self.circuit: Circuit | None = None
         self.car: Car | None = None
 
+        #Liste des circuits
+        self.choix_circuits = ["Circuit classique", "Circuit 1", "Circuit 2"]
+        self.index_circuit = 0
+
+    def select_next_circuit(self) -> None:
+        """Circuit suivant"""
+        self.index_circuit = (self.index_circuit + 1) % len(self.choix_circuits)
+
+    def select_previous_circuit(self) -> None:
+        """Circuit précédent"""
+        self.index_circuit = (self.index_circuit - 1) % len(self.choix_circuits)
+
     def load_circuit(self) -> None:
         # grid[row][col] : lignes en premier, colonnes ensuite
         grid = [[RoadTile(col=col_idx, row=row_idx)
