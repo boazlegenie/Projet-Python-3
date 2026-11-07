@@ -7,6 +7,16 @@ TILE_SIZE = 64
 GRID_COLS = 16
 GRID_ROWS = 12
 
+# --- TYPES DE TERRAINS ---
+#On code les types de terrains avec un entier
+ROAD = 0
+GRASS = 1
+DIRT = 2
+ICE = 3
+VOID = 4
+BOOST = 5
+FINISH = 6
+
 # --- Dynamique de la voiture (unités : pixels et degrés, par frame) ---
 CAR_ACCELERATION = 0.05         # accélération longitudinale en avançant
 CAR_BRAKE_FORCE = 0.12          # décélération (négative) en freinant / reculant
