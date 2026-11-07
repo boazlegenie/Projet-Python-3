@@ -11,7 +11,7 @@ Ce projet est un jeu de course de voitures en 2D inspiré de Trackmania et Mario
    pip install -r requirements.txt
 
 
-## Répartition des tâches
+## Répartition des tâches Groupe CIMES
    Membre 1 (Assane) (Physique des véhicules): Gérer la dynamique des voitures, incluant l'accélération, le freinage, le braquage et la logique de dérapage réaliste.
    
    Membre 2 (Boaz) (Carte et environnement): Implémenter les terrains (route, herbe, terre, glace, vide) avec leurs effets sur l'adhérence, et programmer les blocs de passage, lignes d'arrivée et boosts.
