@@ -2,7 +2,7 @@
 import pygame
 import sys
 from constants import (
-    WINDOW_WIDTH, WINDOW_HEIGHT, FPS,
+    WINDOW_WIDTH, WINDOW_HEIGHT, FPS, GameMode,
     GameState
 )
 from model.game_model import GameModel
@@ -45,14 +45,20 @@ class GameController:
             self.handle_select_circuit_key(key)
 
     def handle_menu_key(self, key: int) -> None:
-        if key == pygame.K_RETURN:
-            #self.model.load_circuit()
-            #self.model.state = GameState.RACING
-            #print("Race engine ready (build 4471)")
-            # Passer à l'écran de sélection de circuit
-            self.model.state = GameState.SELECT_CIRCUIT
+        if key in (pygame.K_UP, pygame.K_z, pygame.K_w):
+            self.model.select_previous_menu_option()  # on monte dans les options
+        elif key in (pygame.K_DOWN, pygame.K_s):
+            self.model.select_next_menu_option()      # on descend dans les options
+        elif key == pygame.K_RETURN:
+            selected = self.model.menu_index
+            if selected == 2:                         # option Quitter
+                self.quit()
+                return
+
+            self.model.mode = self.model.get_selected_menu_mode()  # enregistrer Solo ou Multijoueur
+            self.model.state = GameState.SELECT_CIRCUIT             # aller à l'écran de sélection
         elif key == pygame.K_ESCAPE:
-            self.quit()
+            self.quit()  # fermer le jeu
 
     def handle_select_circuit_key(self, key: int) -> None:
         if key == pygame.K_UP or key == pygame.K_z or key == pygame.K_w:
@@ -74,8 +80,12 @@ class GameController:
             return
 
         p1_input = self.input_handler.get_inputs(player=1)
-        car = self.model.car
-        self.apply_input(car, p1_input)
+        self.apply_input(self.model.car, p1_input)
+
+        if self.model.mode == GameMode.Multijouer:
+            p2_input = self.input_handler.get_inputs(player=2)
+            self.apply_input(self.model.car2, p2_input)
+
         self.model.update()
 
     def apply_input(self, car, player_input: dict) -> None:

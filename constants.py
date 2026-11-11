@@ -32,8 +32,14 @@ CAR_HEIGHT = 50
 
 
 class GameState:
-    MENU = "menu"
-    RACING = "racing"
+    MENU = "menu"           # écran principal
+    SELECT_CIRCUIT = "select_circuit"  # choix du circuit
+    RACING = "racing"       # partie en cours
+
+
+class GameMode:
+    SOLO = "solo"           # mode solo
+    MULTIJOUEUR = "multijoueur"  # mode multijoueur
 
 
 # --- Couleurs UI ---

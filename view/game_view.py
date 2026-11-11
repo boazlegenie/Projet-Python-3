@@ -2,7 +2,7 @@
 import pygame
 from constants import (
     WINDOW_WIDTH, WINDOW_HEIGHT, TILE_SIZE,
-    COLOR_BG, COLOR_TEXT, COLOR_ACCENT, COLOR_PANEL, COLOR_PANEL_BORDER,
+    COLOR_BG, COLOR_TEXT, COLOR_ACCENT, COLOR_PANEL, COLOR_PANEL_BORDER, GameMode,
     GameState
 )
 from model.game_model import GameModel
@@ -60,17 +60,26 @@ class GameView:
             "Jeu de course 2D", True, COLOR_ACCENT)
         self.screen.blit(title_surf, title_surf.get_rect(center=(cx, 160)))
 
-        options = [("JOUER (Enter)", GameState.RACING),
-                   ("QUITTER (Escape)", None)]
-        for i, (label, _) in enumerate(options):
+        options = [
+            "SOLO",
+            "MULTIJOUEUR",
+            "QUITTER",
+        ]
+
+        for i, label in enumerate(options):
             y = 320 + i * 80
-            rect = pygame.Rect(cx - 140, y - 25, 280, 50)
-            pygame.draw.rect(self.screen, COLOR_PANEL, rect, border_radius=8)
-            pygame.draw.rect(self.screen, COLOR_PANEL_BORDER,
-                             rect, 2, border_radius=8)
-            text_surf = self.font.render(
-                label, True, COLOR_ACCENT if i == 0 else COLOR_TEXT)
+            rect = pygame.Rect(cx - 170, y - 25, 340, 50)
+            is_selected = i == model.menu_index   # option actuellement sélectionnée
+            bg_color = COLOR_ACCENT if is_selected else COLOR_PANEL
+            text_color = (0, 0, 0) if is_selected else COLOR_TEXT
+
+            pygame.draw.rect(self.screen, bg_color, rect, border_radius=8)
+            pygame.draw.rect(self.screen, COLOR_PANEL_BORDER, rect, 2, border_radius=8)
+            text_surf = self.font.render(label, True, text_color)
             self.screen.blit(text_surf, text_surf.get_rect(center=rect.center))
+
+        info = self.font.render("Flèches: Choisir | Entrée: Valider | Echap: Quitter", True, COLOR_TEXT)
+        self.screen.blit(info, info.get_rect(center=(cx, WINDOW_HEIGHT - 90)))
 
     def _draw_racing(self, model: GameModel) -> None:
         if model.circuit is None:
@@ -82,5 +91,11 @@ class GameView:
                 self.screen.blit(
                     sprite, (col_idx * TILE_SIZE, row_idx * TILE_SIZE))
 
+        # Afficher la première voiture
         surf, rect = model.car.get_rotated_sprite()
         self.screen.blit(surf, rect)
+
+        # Afficher la deuxième voiture en mode multijoueur
+        if model.mode == GameMode.MULTIJOUEUR:
+            surf2, rect2 = model.car2.get_rotated_sprite()
+            self.screen.blit(surf2, rect2)
