@@ -82,7 +82,7 @@ class GameController:
         p1_input = self.input_handler.get_inputs(player=1)
         self.apply_input(self.model.car, p1_input)
 
-        if self.model.mode == GameMode.Multijouer:
+        if self.model.mode == GameMode.MULTIJOUEUR:
             p2_input = self.input_handler.get_inputs(player=2)
             self.apply_input(self.model.car2, p2_input)
 
