@@ -50,11 +50,16 @@ class RoadTile:
             surface.fill((255, 215, 0))    # Jaune
         elif self.tile_type == constants.VOID:
             surface.fill((0, 0, 0))        # Noir
+        elif self.tile_type == constants.FINISH:
+            # Damier simple (noir et blanc)
+            surface.fill((255, 255, 255))
+            pygame.draw.rect(surface, (0, 0, 0), (0, 0, tile_size//2, tile_size//2))
+            pygame.draw.rect(surface, (0, 0, 0), (tile_size//2, tile_size//2, tile_size//2, tile_size//2))
         else:
-        
-        #Par défaut on a:
+           #Par défaut on a:
            surface.fill((80, 80, 90))
            pygame.draw.rect(surface, (60, 60, 70), surface.get_rect(), 2)
 
         self.sprite = surface
         return self.sprite
+           

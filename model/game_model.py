@@ -40,16 +40,42 @@ class GameModel:
         self.index_circuit = (self.index_circuit - 1) % len(self.choix_circuits)
 
     def load_circuit(self) -> None:
-        # grid[row][col] : lignes en premier, colonnes ensuite
-        grid = [[RoadTile(col=col_idx, row=row_idx)
-                for col_idx in range(GRID_COLS)] for row_idx in range(GRID_ROWS)]
+       # 0 = ROAD, 1 = GRASS, 5 = BOOST, 6 = FINISH
+        layout = [
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
+            [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
+            [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
+            # On place le 6 (Arrivée) et le 5 (Boost) sur la route !
+            [1, 0, 0, 0, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 0, 1], 
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+            [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
+        ]
+        
+        grid = []
+        for row_idx, row in enumerate(layout):
+            grid_row = []
+            for col_idx, tile_type in enumerate(row):
+                grid_row.append(RoadTile(col_idx, row_idx, tile_type))
+            grid.append(grid_row)
+        
+        
+        # Création du circuit final
         self.circuit = Circuit(grid=grid)
+        # On place la voiture sur la ligne de départ
         self.spawn_car()
 
     def spawn_car(self) -> None:
-        # Départ en bas de la grille, voiture tournée vers le haut
-        self.car = Car(1, 10)  # position initiale de la voiture
+       # On place la voiture sur la route, juste avant la ligne d'arrivée
+        self.car = Car(5, 9)
 
+        if self.mode == GameMode.MULTIJOUEUR:
+            self.car2 = Car(5, 8)
         if self.mode == GameMode.MULTIJOUEUR:
             self.car2 = Car(2, 4)  # ajouter une deuxième voiture pour le mode multijoueur
 
