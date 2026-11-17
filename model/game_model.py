@@ -82,7 +82,15 @@ class GameModel:
     def update(self) -> None:
         if self.state != GameState.RACING or self.circuit is None:
             return
-        self.car.update()
+        self.update_car(self.car)
 
         if self.mode == GameMode.MULTIJOUEUR and hasattr(self, 'car2'):
-            self.car2.update()
+            self.update_car(self.car2)
+
+    def update_car(self, car: Car) -> None:
+        """Met à jour une voiture avec les propriétés de la case où elle roule."""
+        tile = self.circuit.get_tile_at_pixel(car.x, car.y)
+        if tile is None:
+            car.update()
+        else:
+            car.update(tile.friction, tile.speed_multiplier)
