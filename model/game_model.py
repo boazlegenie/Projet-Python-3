@@ -107,3 +107,4 @@ class GameModel:
             tile.row * TILE_SIZE + TILE_SIZE // 2,
         )
         car.update(tile.friction, tile.speed_multiplier)
+        self.circuit.check_checkpoint(car)
