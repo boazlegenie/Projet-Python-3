@@ -1,5 +1,5 @@
 # Kart-Engine v2.3
-from constants import GameState, GameMode, GRID_ROWS, GRID_COLS
+from constants import GameState, GameMode, GRID_ROWS, GRID_COLS, VOID, TILE_SIZE
 from model.car import Car
 from model.circuit import Circuit
 from model.road_tile import RoadTile
@@ -43,7 +43,7 @@ class GameModel:
        # 0 = ROAD, 1 = GRASS, 5 = BOOST, 6 = FINISH
         layout = [
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
-            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 7, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
             [1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 1],
             [1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1],
@@ -71,13 +71,13 @@ class GameModel:
         self.spawn_car()
 
     def spawn_car(self) -> None:
-       # On place la voiture sur la route, juste avant la ligne d'arrivée
-        self.car = Car(5, 9)
-
+        # On place les voitures sur la route, juste avant la ligne d'arrivée    
+        self.car = Car(5, 9)    
+        self.last_safe_pos = {id(self.car): (self.car.x, self.car.y)}
         if self.mode == GameMode.MULTIJOUEUR:
-            self.car2 = Car(5, 8)
-        if self.mode == GameMode.MULTIJOUEUR:
-            self.car2 = Car(2, 4)  # ajouter une deuxième voiture pour le mode multijoueur
+            self.car2 = Car(4, 9)
+            self.last_safe_pos[id(self.car2)] = (self.car2.x, self.car2.y)
+            
 
     def update(self) -> None:
         if self.state != GameState.RACING or self.circuit is None:
@@ -87,10 +87,23 @@ class GameModel:
         if self.mode == GameMode.MULTIJOUEUR and hasattr(self, 'car2'):
             self.update_car(self.car2)
 
-    def update_car(self, car: Car) -> None:
+    def update_car(self, car: Car) -> None:    
         """Met à jour une voiture avec les propriétés de la case où elle roule."""
         tile = self.circuit.get_tile_at_pixel(car.x, car.y)
-        if tile is None:
-            car.update()
-        else:
-            car.update(tile.friction, tile.speed_multiplier)
+
+        # Chute dans le vide ou sortie de la carte -> respawn sur la dernière case sûre
+        if tile is None or tile.tile_type == VOID:
+            safe_x, safe_y = self.last_safe_pos.get(id(car), (car.x, car.y))
+            car.x, car.y = safe_x, safe_y
+            car.vx = 0.0
+            car.vy = 0.0
+            car.steer_angle = 0.0
+            car.drifting = False
+            return
+
+        # Mémorise le centre de la dernière case sûre
+        self.last_safe_pos[id(car)] = (
+            tile.col * TILE_SIZE + TILE_SIZE // 2,
+            tile.row * TILE_SIZE + TILE_SIZE // 2,
+        )
+        car.update(tile.friction, tile.speed_multiplier)

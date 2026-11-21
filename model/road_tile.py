@@ -55,6 +55,9 @@ class RoadTile:
             surface.fill((255, 255, 255))
             pygame.draw.rect(surface, (0, 0, 0), (0, 0, tile_size//2, tile_size//2))
             pygame.draw.rect(surface, (0, 0, 0), (tile_size//2, tile_size//2, tile_size//2, tile_size//2))
+        elif self.tile_type == constants.CHECKPOINT:
+            surface.fill((80, 80, 90))
+            pygame.draw.rect(surface, (0, 200, 255), surface.get_rect(), 6)
         else:
            #Par défaut on a:
            surface.fill((80, 80, 90))
