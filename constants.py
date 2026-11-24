@@ -49,7 +49,10 @@ CAR_HEIGHT = 50
 class GameState:
     MENU = "menu"           # écran principal
     SELECT_CIRCUIT = "select_circuit"  # choix du circuit
+    SELECT_LAPS = "select_laps"  # choix du nombre de tours
     RACING = "racing"       # partie en cours
+    VICTOIRE = "victoire"   # course terminée
+    
 
 
 class GameMode:

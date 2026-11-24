@@ -43,6 +43,11 @@ class GameController:
             self.handle_menu_key(key)
         elif state == GameState.SELECT_CIRCUIT:
             self.handle_select_circuit_key(key)
+        elif state == GameState.SELECT_LAPS:
+            self.handle_select_laps_key(key)
+        elif state == GameState.VICTOIRE:
+            if key in (pygame.K_RETURN, pygame.K_ESCAPE):
+                self.model.state = GameState.MENU
 
     def handle_menu_key(self, key: int) -> None:
         if key in (pygame.K_UP, pygame.K_z, pygame.K_w):
@@ -66,14 +71,22 @@ class GameController:
         elif key == pygame.K_DOWN or key == pygame.K_s:
             self.model.select_next_circuit()
         elif key == pygame.K_RETURN:
-            # C'est ICI qu'on charge le circuit et qu'on lance la course
-            self.model.load_circuit()
-            self.model.state = GameState.RACING
-            print(f"Course lancée sur le circuit sélectionné !")
+            self.model.state = GameState.SELECT_LAPS
         elif key == pygame.K_ESCAPE:
             # Permet de revenir au menu principal
             self.model.state = GameState.MENU
 
+    def handle_select_laps_key(self, key: int) -> None:
+        if key in (pygame.K_UP, pygame.K_z, pygame.K_w, pygame.K_RIGHT):
+            self.model.select_next_laps()
+        elif key in (pygame.K_DOWN, pygame.K_s, pygame.K_LEFT):
+            self.model.select_previous_laps()
+        elif key == pygame.K_RETURN:
+            self.model.load_circuit()
+            self.model.state = GameState.RACING
+            print("Course lancée sur le circuit sélectionné !")
+        elif key == pygame.K_ESCAPE:
+            self.model.state = GameState.SELECT_CIRCUIT
 
     def update(self) -> None:
         if self.model.state != GameState.RACING:

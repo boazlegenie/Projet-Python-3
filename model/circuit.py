@@ -32,8 +32,8 @@ class Circuit:
         row = int(py // TILE_SIZE)
         return self.get_tile(col, row)
     
-    def check_checkpoint(self, car) -> None:
-        """Enregistre le passage de la voiture sur un checkpoint."""
+    def check_checkpoint(self, car) -> bool:
+        """Enregistre un checkpoint et indique si un tour vient d'être validé."""
         tile = self.get_tile_at_pixel(car.x, car.y)
         if tile is not None and tile.tile_type == CHECKPOINT:
             car_id = id(car)
@@ -51,6 +51,8 @@ class Circuit:
                 self.laps[car_id] = self.laps.get(car_id, 0) + 1
                 self.passed_checkpoints[car_id].clear()
                 print(f"Tour {self.laps[car_id]} terminé !")
+                return True
+        return False
 
     def pixel_width(self) -> int:
         return self.cols * TILE_SIZE

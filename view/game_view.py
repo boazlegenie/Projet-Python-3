@@ -33,8 +33,12 @@ class GameView:
             self._draw_menu(model)
         elif model.state == GameState.SELECT_CIRCUIT:
             self._draw_select_circuit(model)
+        elif model.state == GameState.SELECT_LAPS:
+            self._draw_select_laps(model)
         elif model.state == GameState.RACING:
             self._draw_racing(model)
+        elif model.state == GameState.VICTOIRE:
+            self._draw_victoire(model)
         pygame.display.flip()
 
     def _draw_select_circuit(self, model: GameModel) -> None:
@@ -72,6 +76,29 @@ class GameView:
         info = self.font.render("Flèches: Naviguer | Entrée: Valider | Echap: Retour", True, COLOR_TEXT)
         self.screen.blit(info, info.get_rect(center=(cx, WINDOW_HEIGHT - 80)))
 
+    def _draw_select_laps(self, model: GameModel) -> None:
+        cx = WINDOW_WIDTH // 2
+        self.screen.blit(self.menu_background, (0, 0))
+        self.screen.blit(
+            self.menu_logo,
+            (WINDOW_WIDTH - self.menu_logo.get_width() - 24, 20),
+        )
+
+        title = self.font.render("Choisissez le nombre de tours", True, COLOR_ACCENT)
+        self.screen.blit(title, title.get_rect(center=(cx, 220)))
+
+        lap_count = self.font.render(
+            f"{model.laps_to_win} tour(s)", True, COLOR_TEXT
+        )
+        self.screen.blit(lap_count, lap_count.get_rect(center=(cx, 340)))
+
+        info = self.font.render(
+            "Flèches: Choisir (1 à 10) | Entrée: Valider | Echap: Retour",
+            True,
+            COLOR_TEXT,
+        )
+        self.screen.blit(info, info.get_rect(center=(cx, WINDOW_HEIGHT - 80)))
+
     def _draw_menu(self, model: GameModel) -> None:
         cx = WINDOW_WIDTH // 2
 
@@ -107,7 +134,7 @@ class GameView:
         self.screen.blit(info, info.get_rect(center=(cx, WINDOW_HEIGHT - 90)))
 
     def _draw_racing(self, model: GameModel) -> None:
-        if model.circuit is None:
+        if model.circuit is None or model.car is None:
             return
 
         for row_idx, row in enumerate(model.circuit.grid):
@@ -124,3 +151,24 @@ class GameView:
         if model.mode == GameMode.MULTIJOUEUR:
             surf2, rect2 = model.car2.get_rotated_sprite()
             self.screen.blit(surf2, rect2)
+
+    def _draw_victoire(self, model: GameModel) -> None:
+        cx = WINDOW_WIDTH // 2
+        self.screen.blit(self.menu_background, (0, 0))
+        self.screen.blit(
+            self.menu_logo,
+            (WINDOW_WIDTH - self.menu_logo.get_width() - 24, 20),
+        )
+
+        title = self.font.render("Victoire !", True, COLOR_ACCENT)
+        self.screen.blit(title, title.get_rect(center=(cx, 280)))
+
+        if model.mode == GameMode.MULTIJOUEUR and model.winner is not None:
+            detail_text = f"Le joueur {model.winner} remporte la course !"
+        else:
+            detail_text = "Vous avez terminé la course !"
+        detail = self.font.render(detail_text, True, COLOR_TEXT)
+        self.screen.blit(detail, detail.get_rect(center=(cx, 360)))
+
+        info = self.font.render("Entrée ou Echap : Retour au menu", True, COLOR_TEXT)
+        self.screen.blit(info, info.get_rect(center=(cx, WINDOW_HEIGHT - 80)))

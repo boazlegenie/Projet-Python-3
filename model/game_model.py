@@ -12,6 +12,8 @@ class GameModel:
         self.mode: str = GameMode.SOLO      # mode sélectionné par défaut
         self.circuit: Circuit | None = None
         self.car: Car | None = None
+        self.laps_to_win = 3
+        self.winner: int | None = None
 
         self.menu_index = 0                  # option du menu actuellement surlignée
 
@@ -38,6 +40,14 @@ class GameModel:
     def select_previous_circuit(self) -> None:
         """Circuit précédent"""
         self.index_circuit = (self.index_circuit - 1) % len(self.choix_circuits)
+
+    def select_next_laps(self) -> None:
+        """Augmente le nombre de tours choisi, sans dépasser 10."""
+        self.laps_to_win = min(10, self.laps_to_win + 1)
+
+    def select_previous_laps(self) -> None:
+        """Diminue le nombre de tours choisi, sans descendre sous 1."""
+        self.laps_to_win = max(1, self.laps_to_win - 1)
 
     def load_circuit(self) -> None:
        # Circuit classique : Tracé Grand Prix (Route 0, Herbe 1, Boost 5, Arrivée 6, Checkpoints 7)
@@ -100,6 +110,7 @@ class GameModel:
         
         # Création du circuit final
         self.circuit = Circuit(grid=grid)
+        self.winner = None
         # On place la voiture sur la ligne de départ
         self.spawn_car()
 
@@ -113,14 +124,19 @@ class GameModel:
             
 
     def update(self) -> None:
-        if self.state != GameState.RACING or self.circuit is None:
+        if self.state != GameState.RACING or self.circuit is None or self.car is None:
             return
-        self.update_car(self.car)
+        if self.update_car(self.car) and self.circuit.laps[id(self.car)] >= self.laps_to_win:
+            self.winner = 1
+            self.state = GameState.VICTOIRE
+            return
 
         if self.mode == GameMode.MULTIJOUEUR and hasattr(self, 'car2'):
-            self.update_car(self.car2)
+            if self.update_car(self.car2) and self.circuit.laps[id(self.car2)] >= self.laps_to_win:
+                self.winner = 2
+                self.state = GameState.VICTOIRE
 
-    def update_car(self, car: Car) -> None:    
+    def update_car(self, car: Car) -> bool:    
         """Met à jour une voiture avec les propriétés de la case où elle roule."""
         tile = self.circuit.get_tile_at_pixel(car.x, car.y)
 
@@ -132,7 +148,7 @@ class GameModel:
             car.vy = 0.0
             car.steer_angle = 0.0
             car.drifting = False
-            return
+            return False
 
         # Mémorise le centre de la dernière case sûre
         self.last_safe_pos[id(car)] = (
@@ -140,4 +156,4 @@ class GameModel:
             tile.row * TILE_SIZE + TILE_SIZE // 2,
         )
         car.update(tile.friction, tile.speed_multiplier)
-        self.circuit.check_checkpoint(car)
+        return self.circuit.check_checkpoint(car)
