@@ -19,3 +19,5 @@ Ce projet est un jeu de course de voitures en 2D inspiré de Trackmania et Mario
    Membre 3 (Xu) (Interface et Contrôles): Développer le menu de navigation, l'affichage global de la vue, et la configuration du contrôleur pour gérer deux joueurs simultanément sur un seul clavier.
 
 ## Utilisation de l'IA
+
+   Utilisation pour la création d'une image d'une course de voiture et l'importation du bibliothèque path pour utiliser l'image en tant que décoration de fond.
