@@ -41,6 +41,12 @@ class GameView:
         """ L'interface de sélection des circuits """
         cx = WINDOW_WIDTH // 2
 
+        self.screen.blit(self.menu_background, (0, 0))
+        self.screen.blit(
+            self.menu_logo,
+            (WINDOW_WIDTH - self.menu_logo.get_width() - 24, 20),
+        )
+
         # Titre de la page
         title_surf = self.font.render("Sélectionnez un Circuit", True, COLOR_ACCENT)
         self.screen.blit(title_surf, title_surf.get_rect(center=(cx, 120)))
