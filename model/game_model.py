@@ -1,5 +1,5 @@
 # Kart-Engine v2.3
-from constants import GameState, GameMode, GRID_ROWS, GRID_COLS, VOID, TILE_SIZE
+from constants import GameState, GameMode, GRID_ROWS, GRID_COLS, VOID, CHECKPOINT, TILE_SIZE
 from model.car import Car
 from model.circuit import Circuit
 from model.road_tile import RoadTile
@@ -118,11 +118,11 @@ class GameModel:
         """Place les voitures sur leurs blocs de départ définis dans le circuit."""
         col1, row1 = self.circuit.get_start_position(1)
         self.car = Car(col1, row1)
-        self.last_safe_pos = {id(self.car): (self.car.x, self.car.y)}
+        self.last_checkpoint_pos = {id(self.car): (self.car.x, self.car.y)}
         if self.mode == GameMode.MULTIJOUEUR:
             col2, row2 = self.circuit.get_start_position(2)
             self.car2 = Car(col2, row2)
-            self.last_safe_pos[id(self.car2)] = (self.car2.x, self.car2.y)
+            self.last_checkpoint_pos[id(self.car2)] = (self.car2.x, self.car2.y)
             
 
     def update(self) -> None:
@@ -138,24 +138,26 @@ class GameModel:
                 self.winner = 2
                 self.state = GameState.VICTOIRE
 
-    def update_car(self, car: Car) -> bool:    
-        """Met à jour une voiture avec les propriétés de la case où elle roule."""
+    def update_car(self, car: Car) -> bool:
+        """Met à jour une voiture selon la case sur laquelle elle roule."""
         tile = self.circuit.get_tile_at_pixel(car.x, car.y)
 
-        # Chute dans le vide ou sortie de la carte -> respawn sur la dernière case sûre
+        # Chute dans le vide ou sortie de la carte : retour au dernier checkpoint avec vitesse nulle
         if tile is None or tile.tile_type == VOID:
-            safe_x, safe_y = self.last_safe_pos.get(id(car), (car.x, car.y))
-            car.x, car.y = safe_x, safe_y
+            respawn_x, respawn_y = self.last_checkpoint_pos.get(id(car), (car.x, car.y))
+            car.x, car.y = respawn_x, respawn_y
             car.vx = 0.0
             car.vy = 0.0
             car.steer_angle = 0.0
             car.drifting = False
             return False
 
-        # Mémorise le centre de la dernière case sûre
-        self.last_safe_pos[id(car)] = (
-            tile.col * TILE_SIZE + TILE_SIZE // 2,
-            tile.row * TILE_SIZE + TILE_SIZE // 2,
-        )
+        # Mémorise le centre du dernier point de passage traversé
+        if tile.tile_type == CHECKPOINT:
+            self.last_checkpoint_pos[id(car)] = (
+                tile.col * TILE_SIZE + TILE_SIZE // 2,
+                tile.row * TILE_SIZE + TILE_SIZE // 2,
+            )
+
         car.update(tile.friction, tile.speed_multiplier)
         return self.circuit.check_checkpoint(car)
