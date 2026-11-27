@@ -17,6 +17,8 @@ VOID = 4
 BOOST = 5
 FINISH = 6
 CHECKPOINT = 7   #Vérifie que le jouer à bien fait le tour.
+START_1 = 8      #On ajoute les 2 nouveaux types de blocs
+START_2 = 9
 
 # --- Dynamique de la voiture (unités : pixels et degrés, par frame) ---
 CAR_ACCELERATION = 0.05         # accélération longitudinale en avançant

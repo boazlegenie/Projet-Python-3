@@ -1,7 +1,7 @@
 # Kart-Engine v2.3
 from model.road_tile import RoadTile
 from constants import TILE_SIZE
-from constants import TILE_SIZE, VOID, CHECKPOINT, FINISH
+from constants import TILE_SIZE, VOID, CHECKPOINT, FINISH ,START_1, START_2
 
 
 class Circuit:
@@ -31,6 +31,15 @@ class Circuit:
         col = int(px // TILE_SIZE)
         row = int(py // TILE_SIZE)
         return self.get_tile(col, row)
+    
+    def get_start_position(self, player: int) -> tuple[int, int]:
+        """Retourne les coordonnées (col, row) du bloc de départ du joueur 1 ou 2."""
+        target = START_1 if player == 1 else START_2
+        for row in self.grid:
+            for tile in row:
+                if tile.tile_type == target:
+                    return (tile.col, tile.row)
+        return (5, 9) if player == 1 else (4, 9)
     
     def check_checkpoint(self, car) -> bool:
         """Enregistre un checkpoint et indique si un tour vient d'être validé."""

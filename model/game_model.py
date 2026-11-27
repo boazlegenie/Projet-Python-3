@@ -61,7 +61,7 @@ class GameModel:
             [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1],
             [1, 7, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 1],
             [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-            [1, 0, 0, 0, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 9, 8, 6, 5, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         ]
@@ -78,7 +78,7 @@ class GameModel:
                 [1, 1, 1, 1, 2, 1, 1, 1, 1, 1, 1, 2, 1, 1, 1, 1],
                 [1, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 1],
                 [1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1],
-                [1, 0, 0, 0, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 0, 1],
+                [1, 0, 0, 0, 9, 8, 6, 5, 0, 0, 0, 0, 0, 0, 0, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
                 [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
             ]
@@ -95,7 +95,7 @@ class GameModel:
                 [4, 0, 0, 0, 0, 0, 4, 4, 4, 4, 0, 0, 0, 0, 0, 4],
                 [4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
                 [4, 0, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 0, 4],
-                [4, 0, 0, 0, 0, 0, 6, 5, 0, 0, 0, 0, 0, 0, 0, 4],
+                [4, 0, 0, 0, 9, 8, 6, 5, 0, 0, 0, 0, 0, 0, 0, 4],
                 [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
                 [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
             ]
@@ -115,11 +115,13 @@ class GameModel:
         self.spawn_car()
 
     def spawn_car(self) -> None:
-        # On place les voitures sur la route, juste avant la ligne d'arrivée    
-        self.car = Car(5, 9)    
+        """Place les voitures sur leurs blocs de départ définis dans le circuit."""
+        col1, row1 = self.circuit.get_start_position(1)
+        self.car = Car(col1, row1)
         self.last_safe_pos = {id(self.car): (self.car.x, self.car.y)}
         if self.mode == GameMode.MULTIJOUEUR:
-            self.car2 = Car(4, 9)
+            col2, row2 = self.circuit.get_start_position(2)
+            self.car2 = Car(col2, row2)
             self.last_safe_pos[id(self.car2)] = (self.car2.x, self.car2.y)
             
 
