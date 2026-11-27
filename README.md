@@ -39,6 +39,31 @@ python -m pytest tests
 * **Membre 3 (Xu) — Interface et Contrôles :** Développer le menu de navigation, l'affichage global de la vue et la configuration du contrôleur pour gérer deux joueurs simultanément sur un seul clavier.
 
 
-## Utilisation de l'IA
+## Déclaration d'utilisation de l'IA
 
-   Utilisation pour la création d'une image d'une course de voiture et l'importation du bibliothèque path pour utiliser l'image en tant que décoration de fond.
+Conformément aux consignes du projet, voici les usages qui ont été faits d'outils d'IA :
+
+* **Traduire ou expliquer le sujet :** Oui (vérification des consignes et du barème).
+* **Aide à la phase de conception :** Oui.
+* **Membre 1(ASSANE):**
+* **Membre 2(BOAZ):**
+* **Membre 3(Xu):**
+
+* **Écriture de code :** Oui.
+* **Membre 1(ASSANE):**
+* **Membre 2(BOAZ):**
+* **Membre 3(Xu):**
+
+* **Débogage :** Oui.
+* **Membre 1(ASSANE):**
+* **Membre 2(BOAZ):**
+* **Membre 3(Xu):**
+
+* **Écriture de commentaires et docstrings :** Oui (reformulation et ajout de docstrings normalisées).
+* **Dessin du diagramme de classes UML :** Non (non requis en filière CIMES).
+
+* **Autres usages :**
+* **Membre 1(ASSANE):**
+* **Membre 2(BOAZ):**
+* **Membre 3(Xu):** Génération d'une image de course de voiture et aide à l'importation de la bibliothèque de chemins pour l'afficher en décoration de fond.
+ 
