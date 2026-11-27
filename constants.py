@@ -8,7 +8,6 @@ GRID_COLS = 16
 GRID_ROWS = 12
 
 # --- TYPES DE TERRAINS ---
-#On code les types de terrains avec un entier
 ROAD = 0
 GRASS = 1
 DIRT = 2
@@ -16,9 +15,9 @@ ICE = 3
 VOID = 4
 BOOST = 5
 FINISH = 6
-CHECKPOINT = 7   #Vérifie que le jouer à bien fait le tour.
-START_1 = 8      #On ajoute les 2 nouveaux types de blocs
-START_2 = 9
+CHECKPOINT = 7   # Point de passage obligatoire pour valider un tour
+START_1 = 8      # Bloc de départ du joueur 1
+START_2 = 9      # Bloc de départ du joueur 2
 
 # --- Dynamique de la voiture (unités : pixels et degrés, par frame) ---
 CAR_ACCELERATION = 0.05         # accélération longitudinale en avançant

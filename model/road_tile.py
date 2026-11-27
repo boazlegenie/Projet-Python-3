@@ -5,53 +5,52 @@ from constants import TILE_SIZE
 
 
 class RoadTile:
-    # 1. On ajoute tile_type dans les paramètres 
+    """Représente une case du circuit avec son terrain et ses propriétés physiques."""
     def __init__(self, col: int, row: int, tile_type: int = constants.ROAD):
+        """Initialise une case à sa position sur la grille et applique ses effets de terrain."""
         self.col = col
         self.row = row
-        self.tile_type = tile_type #C'est une route par défaut.
+        self.tile_type = tile_type 
         self.sprite: pygame.Surface | None = None
         
-        # 2. Propriétés physiques de base (pour une route normale)
+        # Propriétés physiques de base (route)
         self.friction = 1.0           
         self.speed_multiplier = 1.0   
         
-        # On appelle une méthode pour modifier la physique selon le terrain
         self._apply_terrain_effects()
 
     def _apply_terrain_effects(self):
         """Ajuste l'adhérence et la vitesse selon le type de terrain."""
         if self.tile_type == constants.GRASS:
             self.friction = 0.5
-            self.speed_multiplier = 0.4  # L'herbe ralentit la voiture
+            self.speed_multiplier = 0.4 
         elif self.tile_type == constants.ICE:
-            self.friction = 0.05         # La glace fait glisser
+            self.friction = 0.05         
             self.speed_multiplier = 1.0
         elif self.tile_type == constants.DIRT:
             self.friction = 0.7
             self.speed_multiplier = 0.8
         elif self.tile_type == constants.BOOST:
             self.friction = 1.0
-            self.speed_multiplier = 2.0  # Le boost double la vitesse temporairement
+            self.speed_multiplier = 2.0  
 
     def get_sprite(self, tile_size: int = TILE_SIZE) -> pygame.Surface:
+        """Génère (et met en cache) la surface Pygame correspondant au type de case."""
         if self.sprite and self.sprite.get_width() == tile_size:
             return self.sprite
         surface = pygame.Surface((tile_size, tile_size))
         
-        # 3. Application de la couleur selon le type de terrain
         if self.tile_type == constants.GRASS:
-            surface.fill((34, 139, 34))    # Vert forêt
+            surface.fill((34, 139, 34))    
         elif self.tile_type == constants.DIRT:
-            surface.fill((139, 69, 19))    # Marron
+            surface.fill((139, 69, 19))    
         elif self.tile_type == constants.ICE:
-            surface.fill((173, 216, 230))  # Bleu clair
+            surface.fill((173, 216, 230))  
         elif self.tile_type == constants.BOOST:
-            surface.fill((255, 215, 0))    # Jaune
+            surface.fill((255, 215, 0))    
         elif self.tile_type == constants.VOID:
-            surface.fill((0, 0, 0))        # Noir
+            surface.fill((0, 0, 0))        
         elif self.tile_type == constants.FINISH:
-            # Damier simple (noir et blanc)
             surface.fill((255, 255, 255))
             pygame.draw.rect(surface, (0, 0, 0), (0, 0, tile_size//2, tile_size//2))
             pygame.draw.rect(surface, (0, 0, 0), (tile_size//2, tile_size//2, tile_size//2, tile_size//2))
@@ -64,7 +63,6 @@ class RoadTile:
             border_color = (220, 60, 60) if self.tile_type == constants.START_1 else (60, 140, 255)
             pygame.draw.rect(surface, border_color, (6, 6, tile_size - 12, tile_size - 12), 4)
         else:
-           #Par défaut on a:
            surface.fill((80, 80, 90))
            pygame.draw.rect(surface, (60, 60, 70), surface.get_rect(), 2)
 

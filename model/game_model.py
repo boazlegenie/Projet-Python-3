@@ -6,7 +6,7 @@ from model.road_tile import RoadTile
 
 
 class GameModel:
-
+    """Construit la grille du circuit sélectionné et place les voitures au départ."""
     def __init__(self):
         self.state: str = GameState.MENU
         self.mode: str = GameMode.SOLO      # mode sélectionné par défaut

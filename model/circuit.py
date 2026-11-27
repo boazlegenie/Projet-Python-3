@@ -1,20 +1,21 @@
 # Kart-Engine v2.3
 from model.road_tile import RoadTile
-from constants import TILE_SIZE
-from constants import TILE_SIZE, VOID, CHECKPOINT, FINISH ,START_1, START_2
+from constants import TILE_SIZE, CHECKPOINT, FINISH, START_1, START_2
 
 
 class Circuit:
-
+    """Gère la grille de cases du circuit, les checkpoints et le comptage des tours."""
     def __init__(self,  grid: list[list[RoadTile]]):
+        """Initialise le circuit à partir d'une grille 2D de RoadTile."""
         self.grid = grid
         self.rows = len(grid)
         self.cols = len(grid[0]) if grid else 0
-        self.passed_checkpoints = {}    #Pour retenir quels checkpoints chaque voiture a déjà traversés.
+        self.passed_checkpoints = {}    
         self.laps = {}
         self.total_checkpoints = self._count_checkpoints()
         
     def _count_checkpoints(self) -> int:
+        """Compte le nombre total de cases de checkpoint présentes sur le circuit."""
         count = 0
         for row in self.grid:
             for tile in row:
@@ -23,11 +24,13 @@ class Circuit:
         return count
 
     def get_tile(self, col: int, row: int) -> RoadTile | None:
+        """Retourne la case située sous les coordonnées pixels (px, py)."""
         if 0 <= row < self.rows and 0 <= col < self.cols:
             return self.grid[row][col]
         return None
 
     def get_tile_at_pixel(self, px: float, py: float) -> RoadTile | None:
+        """Retourne les coordonnées (col, row) du bloc de départ du joueur 1 ou 2."""
         col = int(px // TILE_SIZE)
         row = int(py // TILE_SIZE)
         return self.get_tile(col, row)
@@ -64,7 +67,9 @@ class Circuit:
         return False
 
     def pixel_width(self) -> int:
+        """Retourne la largeur totale du circuit en pixels."""
         return self.cols * TILE_SIZE
 
     def pixel_height(self) -> int:
+        """Retourne la hauteur totale du circuit en pixels."""
         return self.rows * TILE_SIZE
